@@ -1,0 +1,57 @@
+<!DOCTYPE html> 
+<html> 
+
+<head> 
+	<title>Sensor Control</title> 
+	
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi"> 
+	
+	<link 	rel="stylesheet" 		href="css/jquery.mobile-1.2.0.min.css" />
+	<link 	rel="stylesheet" 		href="css/style.css" />
+
+	<script type="text/javascript" 	src="js/jquery-1.8.2.min.js"></script>
+	
+	<script>
+	
+		$(document).bind("mobileinit", function()
+		{		
+			$.mobile.defaultPageTransition 	 = 'flow';	// Default transition for pages
+		    $.mobile.defaultDialogTransition = 'pop'   // Default transition for dialog's and popup's			
+		});
+		
+	</script>
+	
+	<script type="text/javascript" 	src="js/jquery.mobile-1.2.0.min.js"></script>
+	<script type="text/javascript" 	src="js/control.js"></script>
+	
+</head>
+ 
+<body> 
+ 
+<div data-role="page" class="page-logging" data-theme="a">
+	
+	<div data-role="header">
+		<h1 class="page-title-left">Logging</h1>
+	</div>
+	
+	<div data-role="content">	
+			
+		<textarea id="log-text" readonly></textarea>
+		
+	</div>
+	
+	<div data-role="footer" data-position="fixed">
+		<div data-role="navbar" data-iconpos="top">
+			<ul>
+				<li><a id="btn-usb" href="#" data-icon="gear" data-inline="true">UPDATE USB</a></li>	
+				<li><a id="btn-reset" href="#" data-icon="gear" data-inline="true">RESET LOG</a></li>	
+				<li><a id="btn-led" href="#" data-icon="gear" data-inline="true">LED OFF</a></li>			
+			</ul>
+		</div>	
+	</div>
+	
+</div>
+	
+</body>
+
+</html>
