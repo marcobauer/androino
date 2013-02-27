@@ -1,0 +1,3 @@
+[submodule "jni/comstack"]
+	path = jni/comstack
+	url = git@github.com:marcobauer/comstack.git
