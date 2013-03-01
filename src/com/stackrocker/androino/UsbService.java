@@ -15,7 +15,7 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
-public class UsbService extends DataStack {
+public class UsbService {
 	
     private SenderThread txThread;
     private final static String TAG 	= "UsbService";
@@ -61,9 +61,9 @@ public class UsbService extends DataStack {
                     	
                         if (DEBUG) Log.d(TAG, "bulkTransfer() in buffer size  : " + Integer.valueOf( len ).toString() );
 
-                        intoCache( inBuffer );
+//                        intoCache( inBuffer );
                         
-                        
+//                        threadRead();
                         
                         
 //                        byte[] buffer = new byte[len];

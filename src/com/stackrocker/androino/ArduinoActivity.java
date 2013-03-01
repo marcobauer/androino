@@ -42,25 +42,25 @@ public class ArduinoActivity extends Activity {
 		webView.addJavascriptInterface( webBridge, "webBridge");
 		webView.loadUrl("file:///android_asset/index.html");
 		
-		// ------------------------------------------------- Setup Usb Service Adapter 
-		serviceAdapter = new UsbServiceAdapter( this ) {
-			
-			// Implement abstract method
-			public void debug( String tag, String msg) {
-				webBridge.log("DEBUG : " + tag + " : " + msg );
-			}
-
-			// Implement abstract method
-			public void info( String tag, String msg) {
-				webBridge.log("INFO  : " + tag + " : " + msg );
-			}
-			
-			// Implement abstract method
-			public void error( String tag, String msg) {
-				webBridge.log("ERROR : " + tag + " : " + msg );
-			}
-		
-		};
+//		// ------------------------------------------------- Setup Usb Service Adapter 
+//		serviceAdapter = new UsbServiceAdapter( this ) {
+//			
+//			// Implement abstract method
+//			public void debug( String tag, String msg) {
+//				webBridge.log("DEBUG : " + tag + " : " + msg );
+//			}
+//
+//			// Implement abstract method
+//			public void info( String tag, String msg) {
+//				webBridge.log("INFO  : " + tag + " : " + msg );
+//			}
+//			
+//			// Implement abstract method
+//			public void error( String tag, String msg) {
+//				webBridge.log("ERROR : " + tag + " : " + msg );
+//			}
+//		
+//		};
 		
 	}
 	

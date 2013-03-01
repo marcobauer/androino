@@ -2,31 +2,33 @@
 
 using namespace ComStack;
 
-DataStack::DataStack( JNIEnv* env, jobject obj ) : index(0), cache_full(false), jniEnv(env), jniObj(obj)
+DataStack::DataStack( JNIEnv* env, jobject obj ) : jniEnv(env), jniObj(obj)
 {
 //	/* Klasse des aufrufenden Java Objektes ermitteln: */
 //	jniClass = (*env)->GetObjectClass( env, obj );
 }
 
-boolean DataStack::intoCache( byte data )
+boolean DataStack::intoCache( jbyteArray array )
 {
-	cache[index] = data;
-	index = (++index%CACHE_SIZE);
-	cache_full= true;
-	if( index == 0 )
+	cache_size[RX] = jniEnv->GetArrayLength( array );
+	if( cache_size[RX] >= CACHE_SIZE)
+	{
+		jniEnv->GetByteArrayRegion(array, 0, CACHE_SIZE,(jbyte *) &cache[RX]);
 		return false;
-	else
+	}else
+	{
+		jniEnv->GetByteArrayRegion(array, 0, cache_size[RX],(jbyte *) &cache[RX]);
 		return true;
+	}
 }
 
 byte DataStack::data_read()
 {
-	if(index == 0 ){
-		cache_full = false;
-		return cache[0];
+	if(cache_size[RX] == 0 ){
+		return cache[RX][0];
 	}
 
-	return cache[index--];
+	return cache[RX][cache_size[RX]--];
 }
 
 size_t DataStack::data_write( byte data )
@@ -41,58 +43,28 @@ size_t DataStack::data_write( byte *data, byte size  )
 
 boolean DataStack::data_available()
 {
-	return cache_full;
+	return cache_size[TX] > 0 ;
 }
 
-void DataStack::response( ComStack::RxMessage *data )
+void DataStack::rxMsgCallback( ComStack::RxMessage *rxMsg )
 {
-}
+	byte *data;
+	cache_size[RX] = rxMsg->getContentSize();
+	jbyteArray msgArray = jniEnv->NewByteArray( cache_size[RX] );
 
-void DataStack::request( ComStack::RxMessage *data )
-{
-//   jbyteArray rawAudioCopy = env->NewByteArray( data->getContentSize() );
-//   jbyte toCopy[10];
-//   printf("Filling audio array copy\n");
-//   char theBytes[10] = {0,1,2,3,4,5,6,7,8,9};
-//   for (int i = 0; i < sizeof(theBytes); i++) {
-//	   toCopy[i] = theBytes[i];
-//   }
-//
-//
-//
-//
-//   /* Adresse der Methode "callback" des aufrufenden Java Objektes ermitteln: */
-//   jmethodID jmid = (*jniEnv)->GetMethodID( jniClass, "request", "([B)V");
-//
-//   if (jmid == 0)
-//	  return;
-//
-//   /* Methode "callback" des aufrufenden Java Objektes aufrufen: */
-//   (*jniEnv)->CallVoidMethod(jniEnv, jniObj, jmid, in_number);
-//
-//
-//
-//   env->SetByteArrayRegion(rawAudioCopy,0,10,toCopy);
-//
-//
-//
-//   env->CallVoidMethod(obj, aMethodId, rawAudioCopy);
+	Iterator* it = rxMsg->getContent();
 
+	while( ( data = it->next()) )
+		cache[RX][ cache_size[RX]++ ] = *data;
 
-//
-//	env->SetByteArrayRegion(rawAudioCopy,0,10,toCopy);
-//	printf("Finding object callback\n");
-//	jmethodID aMethodId = env->GetMethodID(env->GetObjectClass(obj),"handleAudio","([B)V");
-//	if(0==aMethodId) throw MyRuntimeException("Method not found error",99);
-//	printf("Invoking the callback\n");
-//	env->CallVoidMethod(obj,aMethodId, &rawAudioCopy);
-//
-//	/* Adresse der Methode "callback" des aufrufenden Java Objektes ermitteln: */
-//	jmethodID jmid = (*jniEnv)->GetMethodID(jniEnv, "request", "(I)V");
-}
+	jniEnv->SetByteArrayRegion( msgArray, 0, cache_size[RX], (jbyte*)&cache[RX]);
 
-void DataStack::event( ComStack::RxMessage *data )
-{
+	/* Adresse der Methode "callback" des aufrufenden Java Objektes ermitteln: */
+	jmethodID aMethodId = jniEnv->GetMethodID(jniEnv->GetObjectClass(jniObj),"jniRxMsgCallback","([B)V");
+	if(0==aMethodId)
+		return;
+
+	jniEnv->CallVoidMethod( jniObj, aMethodId, &msgArray);
 }
 
 void DataStack::error( ComStack::Error::Type error )

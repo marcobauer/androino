@@ -5,7 +5,9 @@
 #include <jni.h>
 #include "comstack/MessageHandler.h"
 
-#define CACHE_SIZE	256
+#define CACHE_SIZE	100
+#define TX	0
+#define RX	1
 
 class DataStack : public ComStack::MessageHandler
 {
@@ -13,7 +15,7 @@ class DataStack : public ComStack::MessageHandler
 public:
 	DataStack( JNIEnv* env, jobject obj );
 
-	boolean intoCache( byte );
+	boolean intoCache( jbyteArray array );
 
 private:
 	byte 	data_read();
@@ -21,16 +23,13 @@ private:
 	size_t 	data_write( byte *, byte );
 	boolean data_available();
 
-	void response( ComStack::RxMessage * );
-	void request( ComStack::RxMessage * );
-	void event( ComStack::RxMessage * );
+	void rxMsgCallback( ComStack::RxMessage * );
 	void error( ComStack::Error::Type );
 	void warn( ComStack::Warning::Type );
 
 private:
-	size_t index;
-	byte cache[CACHE_SIZE];
-	boolean	cache_full;
+	jint cache_size[2];
+	byte cache[2][CACHE_SIZE];
 
 	JNIEnv* jniEnv;
 	jobject jniObj;

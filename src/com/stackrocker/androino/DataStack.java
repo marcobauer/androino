@@ -1,17 +1,21 @@
 package com.stackrocker.androino;
 
+import android.util.Log;
+
 public class DataStack {
 	
     static {
         System.loadLibrary("datastack");
     }
     
+    private final static String TAG = "DataStack";
+    
     // These are the functions you defined in C++
     private native long create();
     private native void destroy(long dataStackPtr);
     
     public  native boolean intoCache( byte[] array );
-    public  native void checkRxMessage();
+    public  native void threadRead();
     
     private long dataStackPtr = 0;
 
@@ -28,24 +32,8 @@ public class DataStack {
         super.finalize();
     }
     
-    public void response( byte[] data )
+    public void jniRxMsgCallback( byte[] data )
     {
-
-    }
-
-    public void request( byte[] data )
-    {
-
-    }
-
-    public void event( byte[] data )
-    {
-
-    }
-
-    public void error( byte[] data )
-    {
-    	
-    }
-    
+    	Log.i( TAG, "Yes, there is a new message" );
+    }    
 }
