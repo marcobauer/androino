@@ -2,4 +2,5 @@
 # generated files
 bin/
 gen/
-
+obj/
+.settings
