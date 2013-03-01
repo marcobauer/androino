@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <usb-device vendor-id="9025"/> 
-    
-<!--     
-    <usb-accessory manufacturer="tieto.com" model="ArduinoControl" version="1.0" />
--->
- 
-</resources>
